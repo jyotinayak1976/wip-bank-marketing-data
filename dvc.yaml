@@ -1,0 +1,44 @@
+stages:
+  data_processing:
+    cmd: python -m src.dataprocessing
+    deps:
+      - src/dataprocessing.py
+      - data/raw/bank-full.csv
+    outs:
+      - data/interim/clean.csv
+
+  features:
+    cmd: python -m src.features
+    deps:
+      - src/features.py
+      - data/interim/clean.csv
+    outs:
+      - data/processed/features.csv
+
+  build_preprocessor:
+    cmd: python -m src.preprocess
+    deps:
+      - src/preprocess.py
+      - data/processed/features.csv
+    outs:
+      - models/preprocessor.joblib
+
+  train:
+    cmd: python -m src.train
+    deps:
+      - src/train.py
+      - models/preprocessor.joblib
+      - data/processed/features.csv
+    outs:
+      - models/logistic_pipeline.joblib
+      - models/rf_pipeline.joblib
+      - models/lgb_pipeline.joblib 
+
+  evaluate:
+    cmd: python -m src.evaluate
+    deps:
+      - src/evaluate.py
+      - models/*.joblib
+      - data/processed/features.csv
+    outs:
+      - reports/figures

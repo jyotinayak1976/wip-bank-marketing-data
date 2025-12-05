@@ -1,0 +1,50 @@
+schema: '2.0'
+stages:
+  data_processing:
+    cmd: python -m src.dataprocessing
+    deps:
+    - path: data/raw/bank-full.csv
+      hash: md5
+      md5: e6b0ca77f3f200ec5428e04dd104da53
+      size: 4610348
+    - path: src/dataprocessing.py
+      hash: md5
+      md5: cbd421bd54aaa9cdb1c07b0c975ac778
+      size: 1868
+    outs:
+    - path: data/interim/clean.csv
+      hash: md5
+      md5: 92fffe6312a56e112a76bf00eab7f9e7
+      size: 3751306
+  features:
+    cmd: python -m src.features
+    deps:
+    - path: data/interim/clean.csv
+      hash: md5
+      md5: 92fffe6312a56e112a76bf00eab7f9e7
+      size: 3751306
+    - path: src/features.py
+      hash: md5
+      md5: 0039322cb173f92003480438b82f691f
+      size: 1420
+    outs:
+    - path: data/processed/features.csv
+      hash: md5
+      md5: 008b6c1d55a284a7b3bda98454b8d217
+      size: 4863988
+  build_preprocessor:
+    cmd: python -m src.preprocess
+    deps:
+    - path: data/processed/features.csv
+      hash: md5
+      md5: 008b6c1d55a284a7b3bda98454b8d217
+      size: 4863988
+    - path: src/preprocess.py
+      hash: md5
+      md5: b141a772d104896d4839d84fe20ad2d0
+      size: 2073
+    outs:
+    - path: models/preprocessor.joblib
+      hash: md5
+      md5: 6d36df3bbba6d64edf2bce6066abebba
+      size: 6429
